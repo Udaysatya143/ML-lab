@@ -1,0 +1,198 @@
+Steps to Implement Polynomial Regression:
+Import Required Libraries
+Load the Dataset
+Visualize the Data
+Preprocess Data if Necessary
+Build a Polynomial Regression Model
+Evaluate the Model's Performance
+Make Predictions Using the Model
+1. Import Required Libraries
+python
+Copy code
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+2. Load the Dataset
+We’ll assume we have a dataset containing two columns: Position Level and Salary. If you have your own dataset, you can load it with pandas.
+
+python
+Copy code
+# Example dataset
+data = {
+    'Position Level': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'Salary': [45000, 50000, 60000, 80000, 110000, 150000, 200000, 300000, 500000, 1000000]
+}
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Display the dataset
+print(df.head())
+3. Visualize the Data
+We can plot the relationship between position level and salary to see how the data looks.
+
+python
+Copy code
+# Scatter plot of the data
+plt.scatter(df['Position Level'], df['Salary'], color='blue')
+plt.title('Position Level vs Salary')
+plt.xlabel('Position Level')
+plt.ylabel('Salary')
+plt.show()
+4. Preprocess Data (Split into Training and Testing Sets)
+Since this is a simple dataset, no major preprocessing is needed. We’ll split the dataset into training and testing sets.
+
+python
+Copy code
+# Split the data into features (X) and target (y)
+X = df[['Position Level']]
+y = df['Salary']
+
+# Split into 80% training and 20% testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+5. Build a Polynomial Regression Model
+To build a polynomial regression model, we first need to transform the input features into polynomial features, then fit the transformed features to a linear regression model.
+
+python
+Copy code
+# Initialize Polynomial Features of degree 4 (you can experiment with different degrees)
+poly = PolynomialFeatures(degree=4)
+
+# Transform the features into polynomial features
+X_poly_train = poly.fit_transform(X_train)
+X_poly_test = poly.transform(X_test)
+
+# Initialize and fit the Linear Regression model on polynomial features
+poly_reg_model = LinearRegression()
+poly_reg_model.fit(X_poly_train, y_train)
+6. Evaluate the Model’s Performance
+We will now evaluate the model's performance by calculating the mean squared error and the R-squared score on both the training and testing sets.
+
+python
+Copy code
+# Predicting on training data
+y_train_pred = poly_reg_model.predict(X_poly_train)
+
+# Predicting on testing data
+y_test_pred = poly_reg_model.predict(X_poly_test)
+
+# Evaluate model performance on training data
+train_mse = mean_squared_error(y_train, y_train_pred)
+train_r2 = r2_score(y_train, y_train_pred)
+
+# Evaluate model performance on testing data
+test_mse = mean_squared_error(y_test, y_test_pred)
+test_r2 = r2_score(y_test, y_test_pred)
+
+print(f"Training MSE: {train_mse:.2f}, Training R²: {train_r2:.2f}")
+print(f"Testing MSE: {test_mse:.2f}, Testing R²: {test_r2:.2f}")
+7. Visualize the Polynomial Regression Results
+We can plot the polynomial regression curve to visualize how well the model fits the data.
+
+python
+Copy code
+# Plot the original data points
+plt.scatter(X, y, color='blue')
+
+# Generate a smooth curve to plot the polynomial regression line
+X_range = np.linspace(min(X['Position Level']), max(X['Position Level']), 100).reshape(-1, 1)
+X_poly_range = poly.transform(X_range)
+
+# Predict salary using the polynomial regression model
+y_poly_range = poly_reg_model.predict(X_poly_range)
+
+# Plot the polynomial regression line
+plt.plot(X_range, y_poly_range, color='red')
+plt.title('Polynomial Regression: Position Level vs Salary')
+plt.xlabel('Position Level')
+plt.ylabel('Salary')
+plt.show()
+8. Make Predictions Using the Model
+You can now predict the salary of an employee based on their position level using the trained polynomial regression model.
+
+python
+Copy code
+# Example: Predict salary for a position level of 6.5
+position_level = np.array([[6.5]])
+position_level_poly = poly.transform(position_level)
+
+predicted_salary = poly_reg_model.predict(position_level_poly)
+print(f"Predicted salary for position level 6.5: {predicted_salary[0]:.2f}")
+Full Code Implementation:
+python
+Copy code
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Example dataset
+data = {
+    'Position Level': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'Salary': [45000, 50000, 60000, 80000, 110000, 150000, 200000, 300000, 500000, 1000000]
+}
+
+df = pd.DataFrame(data)
+
+# Split the data
+X = df[['Position Level']]
+y = df['Salary']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Polynomial regression with degree 4
+poly = PolynomialFeatures(degree=4)
+X_poly_train = poly.fit_transform(X_train)
+X_poly_test = poly.transform(X_test)
+
+# Train the model
+poly_reg_model = LinearRegression()
+poly_reg_model.fit(X_poly_train, y_train)
+
+# Predicting and evaluating on training and testing data
+y_train_pred = poly_reg_model.predict(X_poly_train)
+y_test_pred = poly_reg_model.predict(X_poly_test)
+
+train_mse = mean_squared_error(y_train, y_train_pred)
+train_r2 = r2_score(y_train, y_train_pred)
+test_mse = mean_squared_error(y_test, y_test_pred)
+test_r2 = r2_score(y_test, y_test_pred)
+
+print(f"Training MSE: {train_mse:.2f}, Training R²: {train_r2:.2f}")
+print(f"Testing MSE: {test_mse:.2f}, Testing R²: {test_r2:.2f}")
+
+# Visualize the results
+plt.scatter(X, y, color='blue')
+X_range = np.linspace(min(X['Position Level']), max(X['Position Level']), 100).reshape(-1, 1)
+X_poly_range = poly.transform(X_range)
+y_poly_range = poly_reg_model.predict(X_poly_range)
+plt.plot(X_range, y_poly_range, color='red')
+plt.title('Polynomial Regression: Position Level vs Salary')
+plt.xlabel('Position Level')
+plt.ylabel('Salary')
+plt.show()
+
+# Predict a new sample
+position_level = np.array([[6.5]])
+position_level_poly = poly.transform(position_level)
+predicted_salary = poly_reg_model.predict(position_level_poly)
+print(f"Predicted salary for position level 6.5: {predicted_salary[0]:.2f}")
+Conclusion:
+Polynomial Regression allows you to model non-linear relationships between features and the target variable.
+By transforming features into polynomial features, we built a model to predict employee salary based on their position level.
+The model was evaluated using mean squared error and R-squared score to ensure its performance on both training and test data.
+We used the model to predict salary for a new position level, demonstrating its ability to generalize.
+
+
+
+
+
+
+
+
