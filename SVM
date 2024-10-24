@@ -1,0 +1,131 @@
+Steps to Implement SVM Classifier with Linear Kernel:
+Import Libraries
+Load and Explore the Dataset
+Split the Data into Training and Testing Sets
+Train an SVM Classifier with Linear Kernel
+Evaluate the Model
+Classify a New Sample
+1. Import Libraries
+python
+Copy code
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+2. Load and Explore the Dataset
+We will use the Iris dataset for demonstration, where we classify different species of flowers. You can replace this with any other dataset of your choice.
+
+python
+Copy code
+from sklearn.datasets import load_iris
+
+# Load the Iris dataset
+iris = load_iris()
+
+# Create a DataFrame for better visualization
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df['species'] = iris.target
+df['species'] = df['species'].replace({0: 'setosa', 1: 'versicolor', 2: 'virginica'})
+
+# Show the first few rows of the data
+print(df.head())
+3. Split the Data into Training and Testing Sets
+Split the dataset into training and testing sets to evaluate the model.
+
+python
+Copy code
+# Split the data into features and target
+X = df.drop(columns=['species'])  # Features
+y = df['species']  # Target
+
+# Split into 80% training and 20% testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+4. Train an SVM Classifier with Linear Kernel
+We will use SVC from scikit-learn to train an SVM with a linear kernel.
+
+python
+Copy code
+# Initialize the SVM classifier with linear kernel
+svm_clf = SVC(kernel='linear', random_state=42)
+
+# Train the SVM classifier
+svm_clf.fit(X_train, y_train)
+5. Evaluate the Model
+Once the SVM classifier is trained, evaluate the model’s performance on the test data.
+
+python
+Copy code
+# Make predictions on the test set
+y_pred = svm_clf.predict(X_test)
+
+# Evaluate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+
+# Classification report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+# Confusion matrix
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+6. Classify a New Sample
+Now, classify a new sample using the trained SVM classifier. For example, given a new flower sample, we will predict its species.
+
+python
+Copy code
+# Example of a new sample: Sepal length, Sepal width, Petal length, Petal width
+new_sample = np.array([[5.1, 3.5, 1.4, 0.2]])
+
+# Predict the class of the new sample
+new_prediction = svm_clf.predict(new_sample)
+print(f"Predicted class for the new sample: {iris.target_names[new_prediction][0]}")
+Full Code Implementation:
+python
+Copy code
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.datasets import load_iris
+
+# Load the Iris dataset
+iris = load_iris()
+
+# Create a DataFrame
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df['species'] = iris.target
+df['species'] = df['species'].replace({0: 'setosa', 1: 'versicolor', 2: 'virginica'})
+
+# Split the data into features and target
+X = df.drop(columns=['species'])
+y = df['species']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the SVM classifier with linear kernel
+svm_clf = SVC(kernel='linear', random_state=42)
+svm_clf.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = svm_clf.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# Classify a new sample
+new_sample = np.array([[5.1, 3.5, 1.4, 0.2]])
+new_prediction = svm_clf.predict(new_sample)
+print(f"Predicted class for the new sample: {iris.target_names[new_prediction][0]}")
+Conclusion:
+SVM Classifier with Linear Kernel is a powerful tool for classification problems when the data is linearly separable.
+The Iris dataset was used to train the model, and the SVM performed classification accurately.
+A new sample was classified using the trained model, showcasing the ability of SVM to generalize and classify unseen data.
